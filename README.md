@@ -33,3 +33,56 @@ Perbedaan utama antara **StatelessWidget** dan **StatefulWidget** adalah pada ke
 ### 6. Konsep "Hot Reload" vs. "Hot Restart"
 
 **Hot Reload** dan **Hot Restart** merupakan konsep yang melihat perubahan kode secara instan tanpa harus memulai ulang aplikasi sepenuhnya. **Hot Reload** bekerja dengan men-inject perubahan kode ke dalam **Dart Virtual Machine** yang sedang berjalan dan membangun ulang bagian *widget tree* yang terpengaruh tanpa menghapus state aplikasi. Artinya, data yang aktif, seperti teks dalam form atau posisi scroll, tetap tersimpan. Fitur ini sangat cepat untuk perubahan kecil pada UI atau logika ringan. Sementara itu, **Hot Restart** memuat ulang seluruh aplikasi dengan menghancurkan VM lama dan membuat yang baru. Proses ini menghapus seluruh state dan mengembalikan aplikasi ke kondisi awal seperti saat pertama dijalankan. Hot Restart digunakan saat perubahan yang dilakukan cukup besar, misalnya pada `main()` atau `initState()`, atau ketika **state** aplikasi menjadi tidak konsisten.
+
+---
+
+# Tugas 8
+
+### 1. Perbedaan antara Navigator.push() dan Navigator.pushReplacement()
+
+`Navigator.push()` digunakan untuk menambahkan route baru ke atas tumpukan. sehingga halaman sebelumnya tetap tersimpan di bawah, dan dapat dikembalikan dengan tombol “Back”. Dalam aplikasi saya digunakan ketika berpindah dari halaman utama ke form "Add Product" agar pengguna dapat kembali ke halaman utama.
+
+`Navigator.pushReplacement()` digunakan untuk mengganti route saat ini dengan yang baru/halaman lama dihapus dari stack. Dalam aplikasi saya digunakan dalam **Drawer** untuk perpindahan antara halaman utama.
+
+---
+
+### 2. Cara memanfaatkan hierarchy widget seperti Scaffold, AppBar, dan Drawer untuk membangun struktur halaman
+
+Scaffold : Menjadi kerangka dasar untuk setiap halaman seperti AppBar, Body, dan Drawer.
+
+AppBar : Bertugas menampilkan judul halaman dan memberikan warna serta gaya teks yang seragam di seluruh kode aplikasi.
+
+Drawer : Bertugas menyediakan navigasi antar halaman utama seperti dalam aplikasi yakni Home dan Add Product, serta menampilkan SnackBar saat berpindah halaman.
+
+Contoh pemanfaatannya yakni :
+```
+Scaffold(
+  appBar: AppBar(
+    title: Text('Football Shop'),
+    backgroundColor: Theme.of(context).colorScheme.primary,
+  ),
+  drawer: const LeftDrawer(),
+  body: ...
+)
+```
+---
+
+### 3. kelebihan menggunakan layout widget seperti Padding, SingleChildScrollView, dan ListView saat menampilkan elemen-elemen form
+
+Kelebihan menggunakan layout widget tersebut diantaranya:
+* Padding untuk memberikan jarak antar elemen yang cakupannya untuk beberapa children didalamnya (field input, tombol) sehingga tampilan tidak menempel dan memiliki sekat.
+
+* SingleChildScrollView : karena form bisa memiliki banyak field panjang dan terkadang melebihi tinggi layar di perangkat. Dengan SingleChildScrollView, pengguna dapat scroll tampilan sehingga semua field bisa diakses tanpa terpotong atau overflow. Hal ini mendukung responsifitas dan adaptif. 
+
+* ListView / Column : digunakan untuk menyusun elemen form secara vertikal. ListView bisa digunakan apabila jumlah item banyak dan harus scroll otomatis. Di form saya menggunakan Column di dalam SingleChildScrollView, dengan Padding antar elemen.
+
+---
+
+### 4. menyesuaikan warna tema agar aplikasi Football Shop memiliki identitas visual yang konsisten dengan brand toko
+
+Agar menampilkan identitas visual yang konsisten, saya menggunakan pendekatan dengan beberapa cara, salah satunya:
+
+* Mendefinisikan theme `ThemeData` di MaterialApp dengan colorScheme khusus, misalnya primarySwatch warna khas toko (dalam aplikasi saya warna merah) dan secondary color sesuai dengan opacity atau aksen warna utama.
+
+* Menggunakan warna `Theme.of(context).colorScheme.primary` untuk AppBar, dan konsisten menggunakan warna tersebut di DrawerHeader, tombol utama, dan elemen accent lain.
+---

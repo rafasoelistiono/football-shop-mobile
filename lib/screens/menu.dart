@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:football_shop/widgets/left_drawer.dart';
+import 'package:football_shop/screens/productlist_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -8,9 +10,21 @@ class MyHomePage extends StatelessWidget {
   final String kelas = "B"; //kelas
 
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.person, const Color.fromARGB(255, 15, 15, 211)),
-    ItemHomepage("My Products", Icons.person_outline, const Color.fromARGB(255, 17, 203, 97)),
-    ItemHomepage("Create Product", Icons.account_box, const Color.fromARGB(255, 230, 34, 34)),
+    ItemHomepage(
+      "All Products",
+      Icons.person,
+      const Color.fromARGB(255, 15, 15, 211),
+    ),
+    ItemHomepage(
+      "My Products",
+      Icons.person_outline,
+      const Color.fromARGB(255, 17, 203, 97),
+    ),
+    ItemHomepage(
+      "Create Product",
+      Icons.account_box,
+      const Color.fromARGB(255, 230, 34, 34),
+    ),
   ];
 
   @override
@@ -19,7 +33,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       // AppBar adalah bagian atas halaman yang menampilkan judul.
       appBar: AppBar(
-        // Judul aplikasi "Football News" dengan teks putih dan tebal.
+        // Judul aplikasi "Football Shop" dengan teks putih dan tebal.
         title: const Text(
           'Football Shop',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -27,6 +41,8 @@ class MyHomePage extends StatelessWidget {
         // Warna latar belakang AppBar diambil dari skema warna tema aplikasi.
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      // Tambahkan drawer
+      drawer: const LeftDrawer(),
       // Body halaman dengan padding di sekelilingnya.
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,10 +91,9 @@ class MyHomePage extends StatelessWidget {
                     shrinkWrap: true,
 
                     // Menampilkan ItemCard untuk setiap item dalam list items.
-                    children:
-                        items.map((ItemHomepage item) {
-                          return ItemCard(item);
-                        }).toList(),
+                    children: items.map((ItemHomepage item) {
+                      return ItemCard(item);
+                    }).toList(),
                   ),
                 ],
               ),
@@ -109,7 +124,7 @@ class InfoCard extends StatelessWidget {
             MediaQuery.of(context).size.width /
             3.5, // menyesuaikan dengan lebar device yang digunakan.
         padding: const EdgeInsets.all(16.0),
-        // Menyusun title dan content secara vertikal.
+        // Menyusun title and content secara vertikal.
         child: Column(
           children: [
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -156,6 +171,15 @@ class ItemCard extends StatelessWidget {
                 content: Text("Kamu telah menekan tombol ${item.name}!"),
               ),
             );
+          // Navigasi ke Create Product jika item adalah "Create Product"
+          if (item.name == "Create Product") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CreateProductPage(),
+              ),
+            );
+          }
         },
         // Container untuk menyimpan Icon dan Text
         child: Container(

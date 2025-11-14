@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:football_shop/widgets/left_drawer.dart';
 import 'package:football_shop/screens/productlist_form.dart';
+import 'package:football_shop/screens/product_entry_list.dart';
+import 'package:football_shop/screens/login.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   MyHomePage({super.key});
 
   final String nama = "Lionel Messi"; //nama
@@ -11,13 +15,13 @@ class MyHomePage extends StatelessWidget {
 
   final List<ItemHomepage> items = [
     ItemHomepage(
-      "All Products",
-      Icons.person,
+      "Logout",
+      Icons.logout,
       const Color.fromARGB(255, 15, 15, 211),
     ),
     ItemHomepage(
-      "My Products",
-      Icons.person_outline,
+      "Product List",
+      Icons.list,
       const Color.fromARGB(255, 17, 203, 97),
     ),
     ItemHomepage(
@@ -26,6 +30,53 @@ class MyHomePage extends StatelessWidget {
       const Color.fromARGB(255, 230, 34, 34),
     ),
   ];
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  void _onItemTap(ItemHomepage item) async {
+    final request = context.read<CookieRequest>();
+    if (item.name == "Logout") {
+      final response = await request.logout(
+        "http://localhost:8000/auth/logout/",
+      );
+      if (response['message'] == 'Logout berhasil.') {
+        if (context.mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage()),
+            (Route<dynamic> route) => false,
+          );
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(const SnackBar(content: Text("Logout berhasil.")));
+        }
+      } else {
+        // Handle logout failure
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(const SnackBar(content: Text("Logout gagal.")));
+      }
+    } else if (item.name == "Product List") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProductEntryList()),
+      );
+    } else if (item.name == "Create Product") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const CreateProductPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +105,9 @@ class MyHomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
+                InfoCard(title: 'NPM', content: widget.npm),
+                InfoCard(title: 'Name', content: widget.nama),
+                InfoCard(title: 'Class', content: widget.kelas),
               ],
             ),
 
@@ -91,8 +142,8 @@ class MyHomePage extends StatelessWidget {
                     shrinkWrap: true,
 
                     // Menampilkan ItemCard untuk setiap item dalam list items.
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
+                    children: widget.items.map((ItemHomepage item) {
+                      return ItemCard(item, onTap: () => _onItemTap(item));
                     }).toList(),
                   ),
                 ],
@@ -149,8 +200,9 @@ class ItemCard extends StatelessWidget {
   // Menampilkan kartu dengan ikon dan nama.
 
   final ItemHomepage item;
+  final VoidCallback? onTap;
 
-  const ItemCard(this.item, {super.key});
+  const ItemCard(this.item, {super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -162,25 +214,7 @@ class ItemCard extends StatelessWidget {
 
       child: InkWell(
         // Aksi ketika kartu ditekan.
-        onTap: () {
-          // Menampilkan pesan SnackBar saat kartu ditekan.
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!"),
-              ),
-            );
-          // Navigasi ke Create Product jika item adalah "Create Product"
-          if (item.name == "Create Product") {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CreateProductPage(),
-              ),
-            );
-          }
-        },
+        onTap: onTap,
         // Container untuk menyimpan Icon dan Text
         child: Container(
           padding: const EdgeInsets.all(8),

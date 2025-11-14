@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:football_shop/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:football_shop/widgets/left_drawer.dart';
 
@@ -21,6 +25,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Product'),
@@ -146,8 +151,14 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     DropdownMenuItem(value: "Jersey", child: Text("Jersey")),
                     DropdownMenuItem(value: "Boots", child: Text("Boots")),
                     DropdownMenuItem(value: "Ball", child: Text("Ball")),
-                    DropdownMenuItem(value: "Accessories", child: Text("Accessories")),
-                    DropdownMenuItem(value: "Merchandise", child: Text("Merchandise")),
+                    DropdownMenuItem(
+                      value: "Accessories",
+                      child: Text("Accessories"),
+                    ),
+                    DropdownMenuItem(
+                      value: "Merchandise",
+                      child: Text("Merchandise"),
+                    ),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -194,35 +205,59 @@ class _CreateProductPageState extends State<CreateProductPage> {
 
                 // Submit button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("Product Created!"),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: [
-                                Text("Name: $_name"),
-                                Text("Description: $_description"),
-                                Text("Price: Rp$_price"),
-                                Text("Stock: $_stock"),
-                                Text("Category: $_category"),
-                                Text("Image: $_imageUrl"),
-                                Text("Featured: $_isFeatured"),
-                              ],
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              child: const Text("OK"),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                      try {
+                        // TODO: Ganti URL dengan URL aplikasi Anda
+                        // Untuk emulator Android, gunakan http://10.0.2.2:8000/
+                        // Untuk browser, gunakan http://localhost:8000/
+                        // Pastikan Anda memiliki objek 'request' yang tersedia di scope ini.
+
+                        // For Android emulator, use http://10.0.2.2:8000/
+                        // For web, use http://localhost:8000/
+                        final response = await request.postJson(
+                          "http://localhost:8000/create-flutter/", // Updated URL as per your feedback
+                          jsonEncode({
+                            // Data dari form Anda dipetakan ke format JSON
+                            "name": _name,
+                            "description": _description,
+                            "price": _price,
+                            "stock": _stock,
+                            "category": _category,
+                            "thumbnail":
+                                _imageUrl, // Dipetakan dari _imageUrl Anda
+                            "is_featured":
+                                _isFeatured, // Asumsi _isFeatured sudah boolean
+                          }),
+                        );
+
+                        if (context.mounted) {
+                          if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Product successfully created!"),
+                              ),
+                            );
+                            // Kembali ke halaman sebelumnya setelah berhasil
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  response['message'] ??
+                                      "Something went wrong, please try again.",
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                        }
+                      }
                     }
                   },
                   child: const Text("Create Product"),

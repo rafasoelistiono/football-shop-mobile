@@ -15,19 +15,19 @@ class MyHomePage extends StatefulWidget {
 
   final List<ItemHomepage> items = [
     ItemHomepage(
-      "Logout",
-      Icons.logout,
-      const Color.fromARGB(255, 15, 15, 211),
-    ),
-    ItemHomepage(
       "Product List",
-      Icons.list,
-      const Color.fromARGB(255, 17, 203, 97),
+      Icons.list_alt_rounded,
+      const Color(0xFF2563EB), 
     ),
     ItemHomepage(
       "Create Product",
-      Icons.account_box,
-      const Color.fromARGB(255, 230, 34, 34),
+      Icons.add_circle_outline_rounded,
+      const Color(0xFFEA580C),
+    ),
+    ItemHomepage(
+      "Logout",
+      Icons.logout_rounded,
+      const Color(0xFFDC2626),
     ),
   ];
 
@@ -54,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ..showSnackBar(const SnackBar(content: Text("Logout berhasil.")));
         }
       } else {
-        // Handle logout failure
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(const SnackBar(content: Text("Logout gagal.")));
@@ -80,110 +79,139 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold menyediakan struktur dasar halaman dengan AppBar dan body.
+    // Menggunakan background abu-abu muda seperti pada HTML (bg-slate-50)
     return Scaffold(
-      // AppBar adalah bagian atas halaman yang menampilkan judul.
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        // Judul aplikasi "Football Shop" dengan teks putih dan tebal.
+        // Desain AppBar bersih seperti Navbar HTML
         title: const Text(
-          'Football Shop',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          'Athlete Lab',
+          style: TextStyle(
+            color: Color(0xFF0F172A), // Slate-900
+            fontWeight: FontWeight.w900, // font-black
+            letterSpacing: -0.5,
+          ),
         ),
-        // Warna latar belakang AppBar diambil dari skema warna tema aplikasi.
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.grey[200],
+            height: 1.0,
+          ),
+        ),
       ),
-      // Tambahkan drawer
       drawer: const LeftDrawer(),
-      // Body halaman dengan padding di sekelilingnya.
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        // Menyusun widget secara vertikal dalam sebuah kolom.
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Row untuk menampilkan 3 InfoCard secara horizontal.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(title: 'NPM', content: widget.npm),
-                InfoCard(title: 'Name', content: widget.nama),
-                InfoCard(title: 'Class', content: widget.kelas),
-              ],
-            ),
-
-            // Memberikan jarak vertikal 16 unit.
-            const SizedBox(height: 16.0),
-
-            // Menempatkan widget berikutnya di tengah halaman.
-            Center(
-              child: Column(
-                // Menyusun teks dan grid item secara vertikal.
-                children: [
-                  // Menampilkan teks sambutan dengan gaya tebal dan ukuran 18.
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di Football Shop',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-
-                  // Grid untuk menampilkan ItemCard dalam bentuk grid 3 kolom.
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    // Agar grid menyesuaikan tinggi kontennya.
-                    shrinkWrap: true,
-
-                    // Menampilkan ItemCard untuk setiap item dalam list items.
-                    children: widget.items.map((ItemHomepage item) {
-                      return ItemCard(item, onTap: () => _onItemTap(item));
-                    }).toList(),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Welcome Header (Mirip Header Section HTML)
+              const Text(
+                "Welcome Back,",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Color(0xFF475569), // Slate-600
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 4.0),
+              Text(
+                widget.nama,
+                style: const TextStyle(
+                  fontSize: 32.0,
+                  fontWeight: FontWeight.w900, // font-black
+                  color: Color(0xFF0F172A), // Slate-900
+                  height: 1.1,
+                ),
+              ),
+              
+              const SizedBox(height: 24.0),
+
+              // User Info Section (Desain mirip Filter Section HTML)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.0), // rounded-xl
+                  border: Border.all(color: Colors.grey.shade200),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildInfoColumn(Icons.badge_outlined, "NPM", widget.npm),
+                    Container(height: 40, width: 1, color: Colors.grey[200]),
+                    _buildInfoColumn(Icons.class_outlined, "Class", widget.kelas),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 32.0),
+              
+              const Text(
+                "Quick Actions",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              
+              const SizedBox(height: 16.0),
+
+              // Grid Menu
+              GridView.count(
+                primary: false,
+                shrinkWrap: true,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                crossAxisCount: 2, // Mengubah jadi 2 kolom agar kartu lebih lebar & jelas
+                childAspectRatio: 1.3, 
+                children: widget.items.map((ItemHomepage item) {
+                  return ItemCard(item, onTap: () => _onItemTap(item));
+                }).toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
-class InfoCard extends StatelessWidget {
-  // Kartu informasi yang menampilkan title dan content.
-
-  final String title; // Judul kartu.
-  final String content; // Isi kartu.
-
-  const InfoCard({super.key, required this.title, required this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      // Membuat kotak kartu dengan bayangan dibawahnya.
-      elevation: 2.0,
-      child: Container(
-        // Mengatur ukuran dan jarak di dalam kartu.
-        width:
-            MediaQuery.of(context).size.width /
-            3.5, // menyesuaikan dengan lebar device yang digunakan.
-        padding: const EdgeInsets.all(16.0),
-        // Menyusun title and content secara vertikal.
-        child: Column(
-          children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text(content),
-          ],
+  // Widget helper untuk info user
+  Widget _buildInfoColumn(IconData icon, String label, String value) {
+    return Column(
+      children: [
+        Icon(icon, color: const Color(0xFFEA580C), size: 24), // Orange Icon
+        const SizedBox(height: 8),
+        Text(
+          label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 12.0,
+            color: Colors.grey[500],
+            fontWeight: FontWeight.w600,
+          ),
         ),
-      ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0F172A),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -197,8 +225,6 @@ class ItemHomepage {
 }
 
 class ItemCard extends StatelessWidget {
-  // Menampilkan kartu dengan ikon dan nama.
-
   final ItemHomepage item;
   final VoidCallback? onTap;
 
@@ -207,31 +233,73 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      // Menentukan warna latar belakang dari tema aplikasi.
-      color: item.color,
-      // Membuat sudut kartu melengkung.
-      borderRadius: BorderRadius.circular(12),
-
+      color: Colors.transparent,
       child: InkWell(
-        // Aksi ketika kartu ditekan.
         onTap: onTap,
-        // Container untuk menyimpan Icon dan Text
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              // Menyusun ikon dan teks di tengah kartu.
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(item.icon, color: Colors.white, size: 30.0),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
+          decoration: BoxDecoration(
+            // Gradient background mirip tombol HTML
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                item.color,
+                item.color.withOpacity(0.8),
               ],
             ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: item.color.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              // Dekorasi lingkaran transparan di background kartu
+              Positioned(
+                right: -10,
+                top: -10,
+                child: Icon(
+                  item.icon,
+                  size: 80,
+                  color: Colors.white.withOpacity(0.15),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        item.icon,
+                        color: Colors.white,
+                        size: 28.0,
+                      ),
+                    ),
+                    Text(
+                      item.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

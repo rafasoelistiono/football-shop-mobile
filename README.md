@@ -87,17 +87,6 @@ Agar menampilkan identitas visual yang konsisten, saya menggunakan pendekatan de
 * Menggunakan warna `Theme.of(context).colorScheme.primary` untuk AppBar, dan konsisten menggunakan warna tersebut di DrawerHeader, tombol utama, dan elemen accent lain.
 ---
 
-Berikut adalah jawaban untuk `README.md` Anda, dibuat singkat dan padat.
-
----
-
-# Tugas 9 
-
----
-Berikut adalah jawaban untuk `README.md` Anda, dibuat singkat dan padat.
-
----
-
 # Tugas 9
 
 ### 1. Mengapa kita perlu membuat model Dart saat mengambil/mengirim data JSON? Apa konsekuensinya jika langsung memetakan Map<String, dynamic> tanpa model?
